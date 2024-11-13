@@ -2,6 +2,7 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <div id="container">
+    <button class="moveBtnInit">Move</button>
 
 </div>
 `
@@ -11,6 +12,9 @@ template.innerHTML = `
 export class MovingBox extends HTMLElement {
 
     #container
+    #button
+    #counter = 0
+    #abortController
 
     constructor() {
         super()
@@ -20,20 +24,51 @@ export class MovingBox extends HTMLElement {
         const linkElement = document.createElement('link')
         linkElement.setAttribute('rel', 'stylesheet')
         linkElement.setAttribute('href', './components/moving-box/movingBox.css')
-        this.shadowRoot.appendChild(linkElement)
+        this.shadowRoot.prepend(linkElement)
 
-        // Get the container element
+        // Get the elements
 
         this.#container = this.shadowRoot.querySelector('#container')
+        this.#button = this.shadowRoot.querySelector('.moveBtnInit')
 }
 
 
 attributeChangedCallback(name, oldValue, newValue) {}
 
 connectedCallback() {
-    this.#container.innerHTML = `<h1>HEJ</h1>`
+    this.#abortController = new AbortController()
+    const signal = this.#abortController.signal
+
+    
+    this.#button.addEventListener('click', () => {       
+
+        const interval = setInterval(() => {
+            this.#counter++
+            this.#button.classList.remove('moveBtnInit')
+
+            if(this.#button.classList.contains('left')) {
+                this.#button.classList.remove('left')
+                this.#button.classList.add('right')
+            } else {
+                this.#button.classList.remove('right')
+                this.#button.classList.add('left')
+            }
+            if(this.#counter === 5) {
+                clearInterval(interval)
+                this.#counter = 0
+            }
+
+        }, 500)
+    }, { signal })
+
+
+
 }
 
-disconnectedCallback() {}
+disconnectedCallback() {
+    if(this.#abortController) {
+        this.#abortController.abort()
+    }
+}
 
 }
