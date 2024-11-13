@@ -2,6 +2,7 @@ import './style.css'
 import javascriptLogo from './javascript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.js'
+import './components/aer-randint/index.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -22,3 +23,7 @@ document.querySelector('#app').innerHTML = `
 `
 
 setupCounter(document.querySelector('#counter'))
+
+// ADD CODE HERE
+
+document.querySelector('body').appendChild(document.createElement('aer-randint'))
